@@ -1,0 +1,256 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({Name="Alaric Hub",LoadingTitle="Kingdom of Essentia",LoadingSubtitle="By Alaric Hub",ConfigurationSaving={Enabled=true,FolderName="EssentiaConfig",FileName="EssentiaHub"},Discord={Enabled=true,Invite="TARUH_KODE_INVITE_DISINI",RememberJoins=true},KeySystem=true,KeySettings={Title="Alaric Hub",Subtitle="Key System",Note="Join Discord to get the key!",FileName="EssentiaKey",SaveKey=true,GrabKeyFromSite=false,Key={"Alaric123"}}})
+
+-- VARIABLES & HELPERS
+local Player = game:GetService("Players").LocalPlayer
+local RS = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local VU = game:GetService("VirtualUser")
+local CS = game:GetService("CollectionService")
+
+_G.AutoBuyButton, _G.AutoBuyPlot, _G.AutoCollectCoin, _G.AutoHarvest, _G.AutoUproot, _G.AutoBuySeed, _G.AutoPlant, _G.AutoRebirth, _G.AutoClaimQuest, _G.AutoClaimPass, _G.AntiAFK = false, false, false, false, false, false, false, false, false, false, false
+_G.PlantCrops, _G.HarvestCrops, _G.BuyCrops, _G.UprootCrops = {"All"}, {"All"}, {"All"}, {"All"}
+_G.CollectDelay, _G.HarvestDelay, _G.PlantDelay, _G.UprootDelay, _G.BuySeedDelay = 1, 1, 0.5, 1, 1
+
+local CropList = {"All", "carrot", "wheet", "cabbage", "corn", "tomato", "sugar cane", "eggplant", "pumpkin", "what the crop"}
+
+local function getMyTycoon()
+    local char = Player.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
+    local pos, closest, dist = char.HumanoidRootPart.Position, nil, math.huge
+    for _, v in pairs(Workspace:GetChildren()) do
+        if string.find(v.Name, "Tycoon") then
+            local ref = v:FindFirstChildWhichIsA("BasePart", true)
+            if ref and (pos - ref.Position).Magnitude < dist then
+                dist = (pos - ref.Position).Magnitude; closest = v
+            end
+        end
+    end
+    return closest
+end
+
+local function shouldProcess(cName, sList)
+    for _, opt in ipairs(sList) do
+        if opt == "All" or string.lower(opt) == string.lower(cName) then return true end
+    end
+    return false
+end
+
+local function safeTeleport(tCFrame)
+    local hrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        hrp.Velocity, hrp.RotVelocity = Vector3.zero, Vector3.zero
+        hrp.CFrame = tCFrame; task.wait(0.15)
+        hrp.Velocity, hrp.RotVelocity = Vector3.zero, Vector3.zero
+    end
+end
+
+Player.Idled:Connect(function()
+    if _G.AntiAFK then VU:CaptureController(); VU:ClickButton2(Vector2.zero) end
+end)
+
+-- UI TABS
+local MainTab = Window:CreateTab("Main", 4483345998)
+local PlantTab = Window:CreateTab("Auto Plant", 4483345998)
+local HarvestTab = Window:CreateTab("Auto Harvest", 4483345998)
+local UprootTab = Window:CreateTab("Auto Uproots", 4483345998)
+local ShopTab = Window:CreateTab("Shop", 4483345998)
+local RebirthTab = Window:CreateTab("Auto Rebirth", 4483345998)
+local ClaimTab = Window:CreateTab("Auto Claim", 4483345998)
+
+-- MAIN TAB
+MainTab:CreateToggle({Name="Auto Collect Coins",CurrentValue=false,Flag="ToggleCoins",Callback=function(V)
+    _G.AutoCollectCoin = V
+    if V then task.spawn(function()
+        while _G.AutoCollectCoin do
+            local t = getMyTycoon()
+            if t then for _, v in pairs(t:GetDescendants()) do
+                if v.Name == "Collider" and v.Parent and string.find(v.Parent.Name, "CoinDropper") then
+                    safeTeleport(CFrame.new(v.Position + Vector3.new(0,5,0)))
+                end
+            end end
+            task.wait(_G.CollectDelay)
+        end
+    end) end
+end})
+
+MainTab:CreateInput({Name="Collect Coins Delay",CurrentValue="1",PlaceholderText="Secs",RemoveTextAfterFocusLost=false,Flag="InpCol",Callback=function(T) _G.CollectDelay = tonumber(T) or 1 end})
+
+MainTab:CreateToggle({Name="Auto Buy Button",CurrentValue=false,Flag="ToggleBuy",Callback=function(V)
+    _G.AutoBuyButton = V
+    if V then task.spawn(function()
+        while _G.AutoBuyButton do
+            local t = getMyTycoon()
+            if t then for _, v in pairs(t:GetDescendants()) do
+                if v.Name == "Pad" and v.Parent and string.find(v.Parent.Name, "Button") then
+                    local p = string.lower(v.Parent.Name)
+                    if not (string.find(p,"button_p_plot") or string.find(p,"robux") or string.find(p,"pass") or string.find(p,"product") or string.find(p,"vip")) then
+                        if v.Transparency == 0 and v.BrickColor.Name ~= "New Yeller" then
+                            safeTeleport(CFrame.new(v.Position + Vector3.new(0,5,0))); task.wait(0.1)
+                        end
+                    end
+                end
+            end end
+            task.wait(1)
+        end
+    end) end
+end})
+
+MainTab:CreateToggle({Name="Auto Buy Plot",CurrentValue=false,Flag="ToggleBuyPlot",Callback=function(V)
+    _G.AutoBuyPlot = V
+    if V then task.spawn(function()
+        while _G.AutoBuyPlot do
+            local t = getMyTycoon()
+            if t then for _, v in pairs(t:GetDescendants()) do
+                if v.Name == "Pad" and v.Parent and string.find(string.lower(v.Parent.Name), "button_p_plot") then
+                    if v.Transparency == 0 and v.BrickColor.Name ~= "New Yeller" then
+                        safeTeleport(CFrame.new(v.Position + Vector3.new(0,5,0))); task.wait(0.1)
+                    end
+                end
+            end end
+            task.wait(1)
+        end
+    end) end
+end})
+
+MainTab:CreateToggle({Name="Anti AFK",CurrentValue=false,Flag="TogAFK",Callback=function(V) _G.AntiAFK = V end})
+
+-- AUTO PLANT
+PlantTab:CreateDropdown({Name="Select Seed",Options=CropList,CurrentOption={"All"},MultipleOptions=true,Flag="PlantDrop",Callback=function(O) _G.PlantCrops = O end})
+PlantTab:CreateInput({Name="Plant Delay",CurrentValue="0.5",PlaceholderText="Secs",RemoveTextAfterFocusLost=false,Flag="InpPlant",Callback=function(T) _G.PlantDelay = tonumber(T) or 0.5 end})
+PlantTab:CreateToggle({Name="Auto Plant",CurrentValue=false,Flag="TogPlant",Callback=function(V)
+    _G.AutoPlant = V
+    if V then task.spawn(function()
+        while _G.AutoPlant do
+            local t = getMyTycoon()
+            if t then
+                local toPlant, hasAll = {}, false
+                for _, o in ipairs(_G.PlantCrops) do if o == "All" then hasAll = true break end end
+                local list = hasAll and CropList or _G.PlantCrops
+                for _, c in ipairs(list) do if c ~= "All" then table.insert(toPlant, c) end end
+                
+                for _, cName in ipairs(toPlant) do
+                    if not _G.AutoPlant then break end
+                    local sTool = Player.Backpack:FindFirstChild(cName) or Player.Character:FindFirstChild(cName)
+                    if not sTool then
+                        for _, i in pairs(Player.Backpack:GetChildren()) do if string.lower(i.Name) == string.lower(cName) then sTool = i break end end
+                        if not sTool then for _, i in pairs(Player.Character:GetChildren()) do if string.lower(i.Name) == string.lower(cName) then sTool = i break end end end
+                    end
+                    if sTool then
+                        RS.RemoteEvents.EquipSeedEvent:FireServer(sTool); task.wait(0.1)
+                        for _, p in pairs(t:GetChildren()) do
+                            if string.find(p.Name, "P_Plot") then
+                                local f = p:FindFirstChild("ConveyField")
+                                local g = f and f:FindFirstChild("GridOverlay")
+                                if g then
+                                    local cc = 0
+                                    for _, cell in pairs(g:GetChildren()) do
+                                        if cell:IsA("BasePart") then
+                                            cc = cc + 1; local idx = cell:GetAttribute("CellIndex") or cc
+                                            local pCF = cell.CFrame * CFrame.Angles(-3.14159, 0.78535, -3.14159)
+                                            RS.RemoteEvents.PlantEvent:FireServer(f, pCF, idx)
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            task.wait(_G.PlantDelay)
+        end
+    end) end
+end})
+
+-- AUTO HARVEST
+HarvestTab:CreateDropdown({Name="Select Harvest",Options=CropList,CurrentOption={"All"},MultipleOptions=true,Flag="HarvDrop",Callback=function(O) _G.HarvestCrops = O end})
+HarvestTab:CreateInput({Name="Harvest Delay",CurrentValue="1",PlaceholderText="Secs",RemoveTextAfterFocusLost=false,Flag="InpHarv",Callback=function(T) _G.HarvestDelay = tonumber(T) or 1 end})
+HarvestTab:CreateToggle({Name="Auto Harvest",CurrentValue=false,Flag="TogHarv",Callback=function(V)
+    _G.AutoHarvest = V
+    if V then task.spawn(function()
+        while _G.AutoHarvest do
+            for _, c in ipairs(CS:GetTagged("Crop")) do
+                if c:GetAttribute("CanHarvest") == true or c:GetAttribute("Harvested") == false then
+                    if shouldProcess(c.Name, _G.HarvestCrops) then RS.RemoteEvents.HarvestEvent:FireServer(c) end
+                end
+            end
+            task.wait(_G.HarvestDelay)
+        end
+    end) end
+end})
+
+-- AUTO UPROOT
+UprootTab:CreateDropdown({Name="Select Uproot",Options=CropList,CurrentOption={"All"},MultipleOptions=true,Flag="UpDrop",Callback=function(O) _G.UprootCrops = O end})
+UprootTab:CreateInput({Name="Uproot Delay",CurrentValue="1",PlaceholderText="Secs",RemoveTextAfterFocusLost=false,Flag="InpUp",Callback=function(T) _G.UprootDelay = tonumber(T) or 1 end})
+UprootTab:CreateToggle({Name="Auto Uproot",CurrentValue=false,Flag="TogUp",Callback=function(V)
+    _G.AutoUproot = V
+    if V then task.spawn(function()
+        while _G.AutoUproot do
+            local t = getMyTycoon()
+            if t then
+                for _, p in pairs(t:GetChildren()) do
+                    if string.find(p.Name, "P_Plot") then
+                        local f = p:FindFirstChild("ConveyField")
+                        local g = f and f:FindFirstChild("GridOverlay")
+                        if g then
+                            local cc = 0
+                            for _, cell in pairs(g:GetChildren()) do
+                                if cell:IsA("BasePart") then
+                                    cc = cc + 1; local idx = cell:GetAttribute("CellIndex") or cc
+                                    local tg
+                                    for _, m in pairs(f:GetChildren()) do
+                                        if m:IsA("Model") and (cell.Position - m:GetPivot().Position).Magnitude < 3 then tg = m break end
+                                    end
+                                    if (tg and shouldProcess(tg.Name, _G.UprootCrops)) or table.find(_G.UprootCrops, "All") then
+                                        local uCF = cell.CFrame * CFrame.Angles(0, 1.5707, 0)
+                                        RS.RemoteEvents.UprootEvent:FireServer(f, uCF, idx)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            task.wait(_G.UprootDelay)
+        end
+    end) end
+end})
+
+-- SHOP
+ShopTab:CreateDropdown({Name="Select Buy",Options=CropList,CurrentOption={"All"},MultipleOptions=true,Flag="BuyDrop",Callback=function(O) _G.BuyCrops = O end})
+ShopTab:CreateInput({Name="Buy Delay",CurrentValue="1",PlaceholderText="Secs",RemoveTextAfterFocusLost=false,Flag="InpBuy",Callback=function(T) _G.BuySeedDelay = tonumber(T) or 1 end})
+ShopTab:CreateToggle({Name="Auto Buy Seed",CurrentValue=false,Flag="TogBuySeed",Callback=function(V)
+    _G.AutoBuySeed = V
+    if V then task.spawn(function()
+        while _G.AutoBuySeed do
+            local toBuy, hasAll = {}, false
+            for _, o in ipairs(_G.BuyCrops) do if o == "All" then hasAll = true break end end
+            local list = hasAll and CropList or _G.BuyCrops
+            for _, c in ipairs(list) do if c ~= "All" then table.insert(toBuy, c) end end
+            
+            for _, cName in ipairs(toBuy) do
+                local fn = cName:gsub("(%a)([%w_']*)", function(f, r) return f:upper()..r:lower() end)
+                RS.RemoteEvents.BuySeedEvent:FireServer(fn)
+            end
+            task.wait(_G.BuySeedDelay)
+        end
+    end) end
+end})
+
+-- REBIRTH & CLAIM
+RebirthTab:CreateToggle({Name="Auto Rebirth",CurrentValue=false,Flag="TogRebirth",Callback=function(V)
+    _G.AutoRebirth = V
+    if V then task.spawn(function() while _G.AutoRebirth do pcall(function() RS.RemoteEvents.Rebirth:FireServer() end); task.wait(300) end end) end
+end})
+
+ClaimTab:CreateToggle({Name="Auto Claim Quest",CurrentValue=false,Flag="TogQuest",Callback=function(V)
+    _G.AutoClaimQuest = V
+    if V then task.spawn(function() while _G.AutoClaimQuest do for i=1,10 do RS.RemoteEvents.AttemptToClaimDailyQuest:FireServer(i) end; task.wait(300) end end) end
+end})
+
+ClaimTab:CreateToggle({Name="Auto Claim Pass",CurrentValue=false,Flag="TogPass",Callback=function(V)
+    _G.AutoClaimPass = V
+    if V then task.spawn(function() while _G.AutoClaimPass do for l=1,50 do RS.RemoteEvents.AttemptToClaimFunPassReward:FireServer(l,1); RS.RemoteEvents.AttemptToClaimFunPassReward:FireServer(l,2) end; task.wait(300) end end) end
+end})
+
+Rayfield:LoadConfiguration()
