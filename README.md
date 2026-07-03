@@ -1,7 +1,3 @@
--- ========================================================
--- MODERN GLOW UI KEY SYSTEM (CUSTOM STYLE - NO RAYFIELD)
--- ========================================================
-
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
@@ -16,12 +12,10 @@ local UICornerBtn = Instance.new("UICorner")
 local GetKeyBtn = Instance.new("TextButton")
 local UICornerGet = Instance.new("UICorner")
 
--- Setup Parent
-ScreenGui.Name = "AlaricPremiumKey"
+ScreenGui.Name = "Key"
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
 
--- Frame Utama (Modern Glassmorphism Style)
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -33,7 +27,6 @@ MainFrame.Draggable = true
 UICorner.CornerRadius = UDim.new(0, 14)
 UICorner.Parent = MainFrame
 
--- Gradient Warna Ungu-Biru untuk Background Frame
 UIGradient.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 12, 30)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 20, 50))
@@ -41,13 +34,11 @@ UIGradient.Color = ColorSequence.new{
 UIGradient.Rotation = 45
 UIGradient.Parent = MainFrame
 
--- Garis Tepi (Glow Outline)
 UIStroke.Thickness = 2
 UIStroke.Color = Color3.fromRGB(110, 80, 255)
 UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 UIStroke.Parent = MainFrame
 
--- Judul UI
 Title.Name = "Title"
 Title.Parent = MainFrame
 Title.BackgroundTransparency = 1
@@ -58,7 +49,6 @@ Title.Text = "ALARIC HUB — KEY"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 16
 
--- Kotak Input Text (Smooth Dark)
 KeyInput.Name = "KeyInput"
 KeyInput.Parent = MainFrame
 KeyInput.BackgroundColor3 = Color3.fromRGB(10, 8, 20)
@@ -78,7 +68,6 @@ UIStrokeInput.Thickness = 1
 UIStrokeInput.Color = Color3.fromRGB(60, 50, 100)
 UIStrokeInput.Parent = KeyInput
 
--- Tombol Verify (Glow Neon Green/Cyan)
 VerifyBtn.Name = "VerifyBtn"
 VerifyBtn.Parent = MainFrame
 VerifyBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 120)
@@ -92,10 +81,9 @@ VerifyBtn.TextSize = 13
 UICornerBtn.CornerRadius = UDim.new(0, 8)
 UICornerBtn.Parent = VerifyBtn
 
--- Tombol Get Key Discord (Futuristic Discord Blue)
 GetKeyBtn.Name = "GetKeyBtn"
 GetKeyBtn.Parent = MainFrame
-GetKeyBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242) -- Warna khas Discord
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242) 
 GetKeyBtn.BackgroundTransparency = 0.2
 GetKeyBtn.Position = UDim2.new(0.06, 0, 0.74, 15)
 GetKeyBtn.Size = UDim2.new(0.88, 0, 0, 32)
@@ -106,10 +94,6 @@ GetKeyBtn.TextSize = 11
 
 UICornerGet.CornerRadius = UDim.new(0, 8)
 UICornerGet.Parent = GetKeyBtn
-
--- ========================================================
--- LOGIKA VERIFIKASI INTERNAL (KEYFORGE)
--- ========================================================
 
 VerifyBtn.MouseButton1Click:Connect(function()
     local inputKey = KeyInput.Text
