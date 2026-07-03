@@ -1,142 +1,100 @@
-local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
-local UIStroke = Instance.new("UIStroke")
-local UIGradient = Instance.new("UIGradient")
-local Title = Instance.new("TextLabel")
-local KeyInput = Instance.new("TextBox")
-local UICornerInput = Instance.new("UICorner")
-local UIStrokeInput = Instance.new("UIStroke")
-local VerifyBtn = Instance.new("TextButton")
-local UICornerBtn = Instance.new("UICorner")
-local GetKeyBtn = Instance.new("TextButton")
-local UICornerGet = Instance.new("UICorner")
+local FileName = "AlaricHub_KeyAuth.txt"
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-ScreenGui.Name = "Key"
-ScreenGui.Parent = game:GetService("CoreGui")
-ScreenGui.ResetOnSpawn = false
-
-MainFrame.Name = "MainFrame"
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -110)
-MainFrame.Size = UDim2.new(0, 320, 0, 220)
-MainFrame.Active = true
-MainFrame.Draggable = true
-
-UICorner.CornerRadius = UDim.new(0, 14)
-UICorner.Parent = MainFrame
-
-UIGradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(15, 12, 30)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 20, 50))
-}
-UIGradient.Rotation = 45
-UIGradient.Parent = MainFrame
-
-UIStroke.Thickness = 2
-UIStroke.Color = Color3.fromRGB(110, 80, 255)
-UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-UIStroke.Parent = MainFrame
-
-Title.Name = "Title"
-Title.Parent = MainFrame
-Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0, 0, 0, 15)
-Title.Size = UDim2.new(1, 0, 0, 30)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "ALARIC HUB KEY"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 16
-
-KeyInput.Name = "KeyInput"
-KeyInput.Parent = MainFrame
-KeyInput.BackgroundColor3 = Color3.fromRGB(10, 8, 20)
-KeyInput.Position = UDim2.new(0.06, 0, 0.28, 5)
-KeyInput.Size = UDim2.new(0.88, 0, 0, 38)
-KeyInput.Font = Enum.Font.Gotham
-KeyInput.PlaceholderText = "Paste your license key here..."
-KeyInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 130)
-KeyInput.Text = ""
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.TextSize = 13
-
-UICornerInput.CornerRadius = UDim.new(0, 8)
-UICornerInput.Parent = KeyInput
-
-UIStrokeInput.Thickness = 1
-UIStrokeInput.Color = Color3.fromRGB(60, 50, 100)
-UIStrokeInput.Parent = KeyInput
-
-VerifyBtn.Name = "VerifyBtn"
-VerifyBtn.Parent = MainFrame
-VerifyBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 120)
-VerifyBtn.Position = UDim2.new(0.06, 0, 0.52, 10)
-VerifyBtn.Size = UDim2.new(0.88, 0, 0, 38)
-VerifyBtn.Font = Enum.Font.GothamBold
-VerifyBtn.Text = "VERIFY KEY"
-VerifyBtn.TextColor3 = Color3.fromRGB(10, 10, 20)
-VerifyBtn.TextSize = 13
-
-UICornerBtn.CornerRadius = UDim.new(0, 8)
-UICornerBtn.Parent = VerifyBtn
-
-GetKeyBtn.Name = "GetKeyBtn"
-GetKeyBtn.Parent = MainFrame
-GetKeyBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242) 
-GetKeyBtn.BackgroundTransparency = 0.2
-GetKeyBtn.Position = UDim2.new(0.06, 0, 0.74, 15)
-GetKeyBtn.Size = UDim2.new(0.88, 0, 0, 32)
-GetKeyBtn.Font = Enum.Font.GothamBold
-GetKeyBtn.Text = "JOIN DISCORD TO GET KEY"
-GetKeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-GetKeyBtn.TextSize = 11
-
-UICornerGet.CornerRadius = UDim.new(0, 8)
-UICornerGet.Parent = GetKeyBtn
-
-VerifyBtn.MouseButton1Click:Connect(function()
-    local inputKey = KeyInput.Text
-    
-    if inputKey == "" then
-        VerifyBtn.Text = "KEY CANNOT BE EMPTY!"
-        VerifyBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-        task.wait(1.5)
-        VerifyBtn.Text = "VERIFY KEY"
-        VerifyBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 120)
-        return
+local function checkKeyWithKeyForge(targetKey)
+    if not targetKey or targetKey == "" or targetKey == "Paste KF-XXXX-XXXX here" then 
+        return false 
     end
-    
-    VerifyBtn.Text = "CHECKING DATABASE..."
-    VerifyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    VerifyBtn.BackgroundColor3 = Color3.fromRGB(100, 80, 200)
     
     local success, err = pcall(function()
-        (loadstring or load)(game:HttpGet("https://www.keyforge.win/v1/load/cmr4rklu700000akxd5babrtw?e=1&script=cmr4se8du000004jvl4xt95zn&key=" .. inputKey .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647))))()
+        (loadstring or load)(game:HttpGet("https://www.keyforge.win/v1/load/cmr4rklu700000akxd5babrtw?e=1&script=cmr4se8du000004jvl4xt95zn&key=" .. targetKey .. "&_cb=" .. tostring(os.clock()) .. "-" .. tostring(math.random(0, 2147483647))))()
     end)
-    
-    if success then
-        VerifyBtn.Text = "ACCESS GRANTED!"
-        VerifyBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 150)
-        VerifyBtn.TextColor3 = Color3.fromRGB(10, 10, 20)
-        task.wait(1)
-        ScreenGui:Destroy()
-    else
-        VerifyBtn.Text = "INVALID / EXPIRED KEY!"
-        VerifyBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
-        VerifyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        task.wait(2)
-        VerifyBtn.Text = "VERIFY KEY"
-        VerifyBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 120)
-        VerifyBtn.TextColor3 = Color3.fromRGB(10, 10, 20)
-    end
-end)
+    return success
+end
 
-GetKeyBtn.MouseButton1Click:Connect(function()
-    setclipboard("https://discord.gg/meCAQTUna") -- Menyalin Link Discord
-    GetKeyBtn.Text = "DISCORD LINK COPIED!"
-    GetKeyBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-    task.wait(1.5)
-    GetKeyBtn.Text = "JOIN DISCORD TO GET KEY"
-    GetKeyBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
-end)
+if isfile and readfile and isfile(FileName) then
+    local savedKey = readfile(FileName)
+    if savedKey and savedKey ~= "" then
+        Rayfield:Notify({
+            Title = "Auto Auth",
+            Content = "Verifying key...",
+            Duration = 3
+        })
+        
+        if checkKeyWithKeyForge(savedKey) then
+            return
+        end
+    end
+end
+
+local KeyWindow = Rayfield:CreateWindow({
+    Name = "Alaric Hub | Key System",
+    LoadingTitle = "Checking System...",
+    LoadingSubtitle = "by Alaric",
+    ConfigurationSaving = { Enabled = false }
+})
+
+local KeyTab = KeyWindow:CreateTab("Verification", 4483362458)
+local UserKey = ""
+
+KeyTab:CreateInput({
+    Name = "Enter Your Key",
+    PlaceholderText = "Paste KF-XXXX-XXXX here",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        UserKey = Text
+    end,
+})
+
+KeyTab:CreateButton({
+    Name = "Check & Verify Key",
+    Callback = function()
+        if UserKey == "" or UserKey == "Paste KF-XXXX-XXXX here" then
+            Rayfield:Notify({
+                Title = "Error",
+                Content = "Please enter your key first!",
+                Duration = 3
+            })
+            return
+        end
+        
+        Rayfield:Notify({
+            Title = "Checking",
+            Content = "Verifying key...",
+            Duration = 2
+        })
+        
+        if checkKeyWithKeyForge(UserKey) then
+            Rayfield:Notify({
+                Title = "Success",
+                Content = "Key Valid! Enjoy Alaric Hub.",
+                Duration = 3
+            })
+            
+            if writefile then
+                writefile(FileName, UserKey)
+            end
+            
+            task.wait(1)
+            Rayfield:Destroy()
+        else
+            Rayfield:Notify({
+                Title = "Verification Failed",
+                Content = "Invalid, expired, or unregistered key!",
+                Duration = 5
+            })
+        end
+    end,
+})
+
+KeyTab:CreateButton({
+    Name = "Join Discord to Get Key",
+    Callback = function()
+        setclipboard("https://discord.gg/meCAQTUna")
+        Rayfield:Notify({
+            Title = "Link Copied",
+            Content = "Discord invite link has been copied to clipboard!",
+            Duration = 3
+        })
+    end,
+})
